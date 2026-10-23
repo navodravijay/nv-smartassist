@@ -8,7 +8,12 @@ export async function onRequestGet({ env }) {
     "X-Content-Type-Options": "nosniff"
   };
 
-  if (!env.DATABASE_URL) {
+  
+if (
+  env.FAQ_API_ENABLED !== "true" ||
+  !env.DATABASE_URL
+) {
+   
     return Response.json(
       { error: "Database not configured" },
       { status: 503, headers }
