@@ -9,3 +9,4 @@ Purpose: Verify the FAQ API integration.
 
 Developer: Navod Ravindu Jayaweera
 Company: NV SHARP SOLUTIONS
+Preview environment variables retest.
