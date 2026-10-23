@@ -113,6 +113,53 @@ const els = {
 
 const MAX_EXCHANGES = 18;
 const portfolioUrl = "https://nv-sharp-solutions.pages.dev/#portfolio";
+
+const FAQ_PREVIEW_HOST =
+  "neon-preview.nv-smartassist.pages.dev";
+
+let approvedFaqs = [];
+
+function normalizeFaqQuestion(value) {
+  return value
+    .normalize("NFKC")
+    .toLocaleLowerCase("en-US")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
+
+async function loadApprovedFaqs() {
+  // Only enable database FAQs on our Preview site.
+  if (location.hostname !== FAQ_PREVIEW_HOST) return;
+
+  try {
+    const response = await fetch("/api/faqs", {
+      method: "GET",
+      credentials: "omit",
+      cache: "no-store"
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    if (data?.success !== true ||
+        !Array.isArray(data.faqs)) return;
+
+    approvedFaqs = data.faqs
+      .filter(item =>
+        item &&
+        typeof item.question === "string" &&
+        typeof item.answer === "string" &&
+        item.question.length <= 400 &&
+        item.answer.length <= 2000
+      )
+      .slice(0, 50);
+
+  } catch {
+    // Keep existing scripted replies if API fails.
+  }
+}
+
 let currentLang = "en";
 let exchangeCount = 0;
 let generation = 0;
