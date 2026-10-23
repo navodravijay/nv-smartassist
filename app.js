@@ -249,18 +249,35 @@ function sendMessage(rawText, forcedIntent) {
   const localeAtSend = currentLang;
   const t = ui[localeAtSend];
   const intent = forcedIntent || findIntent(text);
+  
+const databaseFaq = localeAtSend === "en"
+  ? approvedFaqs.find(
+      faq => normalizeFaqQuestion(faq.question) ===
+             normalizeFaqQuestion(text)
+    )
+  : undefined;
+
   appendMessage("user", text);
   els.chatInput.value = "";
   els.charCount.textContent = "0";
   els.chatInput.style.height = "auto";
   updateInsights(intent);
+  
+if (databaseFaq) {
+  els.detectedTopic.textContent = "Neon FAQ";
+  els.detectedReason.textContent =
+    "Approved database FAQ matched in your browser.";
+}
+
   const typing = showTyping();
   setPending(true);
   const requestGeneration = generation;
   answerTimeout = window.setTimeout(() => {
     if (requestGeneration !== generation) return;
     typing.remove();
-    const reply = t.responses[intent] || t.responses.fallback;
+    const reply = databaseFaq?.answer ||
+  t.responses[intent] ||
+  t.responses.fallback;
     lastReply = reply;
     appendMessage("bot", reply, intent === "portfolio" || intent === "contact" || intent === "pricing");
     setPending(false);
@@ -379,5 +396,5 @@ leadForm.addEventListener("submit", event => {
 
 // Initialize once; no external resources are used.
 document.getElementById("currentYear").textContent = String(new Date().getFullYear());
-renderSuggestions();
+void loadApprovedFaqs();renderSuggestions();
 resetConversation();
