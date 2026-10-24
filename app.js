@@ -118,6 +118,7 @@ const FAQ_PREVIEW_HOST =
   "neon-preview.nv-smartassist.pages.dev";
 
 let approvedFaqs = [];
+let faqLoadPromise = Promise.resolve();
 
 function normalizeFaqQuestion(value) {
   return value
@@ -240,48 +241,86 @@ function updateInsights(intent) {
   });
 }
 
-function sendMessage(rawText, forcedIntent) {
+
+ function sendMessage(rawText, forcedIntent) {
   const text = rawText.trim().slice(0, 400);
   if (waiting) return;
-  if (!text) { showToast(ui[currentLang].toastEmpty); return; }
-  if (exchangeCount >= MAX_EXCHANGES) { showToast(ui[currentLang].toastLimit); return; }
+  if (!text) {
+    showToast(ui[currentLang].toastEmpty);
+    return;
+  }
+  if (exchangeCount >= MAX_EXCHANGES) {
+    showToast(ui[currentLang].toastLimit);
+    return;
+  }
+
   exchangeCount += 1;
   const localeAtSend = currentLang;
   const t = ui[localeAtSend];
   const intent = forcedIntent || findIntent(text);
-  
-const databaseFaq = localeAtSend === "en"
-  ? approvedFaqs.find(
-      faq => normalizeFaqQuestion(faq.question) ===
-             normalizeFaqQuestion(text)
-    )
-  : undefined;
 
   appendMessage("user", text);
   els.chatInput.value = "";
   els.charCount.textContent = "0";
   els.chatInput.style.height = "auto";
   updateInsights(intent);
-  
-if (databaseFaq) {
-  els.detectedTopic.textContent = "Neon FAQ";
-  els.detectedReason.textContent =
-    "Approved database FAQ matched in your browser.";
-}
 
   const typing = showTyping();
   setPending(true);
   const requestGeneration = generation;
-  answerTimeout = window.setTimeout(() => {
+
+  answerTimeout = window.setTimeout(async () => {
+    let timeoutId;
+
+    try {
+      await Promise.race([
+        faqLoadPromise,
+        new Promise(resolve => {
+          timeoutId = window.setTimeout(resolve, 4500);
+        })
+      ]);
+    } catch {
+      // Use local fallback.
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
+
     if (requestGeneration !== generation) return;
+
+    const databaseFaq = localeAtSend === "en"
+      ? approvedFaqs.find(faq =>
+          normalizeFaqQuestion(faq.question) ===
+          normalizeFaqQuestion(text))
+      : undefined;
+
     typing.remove();
+
+    if (databaseFaq) {
+      els.detectedTopic.textContent = "Neon FAQ";
+      els.detectedReason.textContent =
+        "Approved database FAQ matched in your browser.";
+    }
+
     const reply = databaseFaq?.answer ||
-  t.responses[intent] ||
-  t.responses.fallback;
+      t.responses[intent] ||
+      t.responses.fallback;
+
     lastReply = reply;
-    appendMessage("bot", reply, intent === "portfolio" || intent === "contact" || intent === "pricing");
+
+    appendMessage(
+      "bot",
+      reply,
+      !databaseFaq &&
+      (intent === "portfolio" ||
+       intent === "contact" ||
+       intent === "pricing")
+    );
+
     setPending(false);
-    if (exchangeCount >= MAX_EXCHANGES) showToast(t.toastLimit);
+
+    if (exchangeCount >= MAX_EXCHANGES) {
+      showToast(t.toastLimit);
+    }
   }, 460);
 }
 
@@ -398,5 +437,6 @@ leadForm.addEventListener("submit", event => {
 
 // Initialize once; no external resources are used.
 document.getElementById("currentYear").textContent = String(new Date().getFullYear());
-void loadApprovedFaqs();renderSuggestions();
+faqLoadPromise = loadApprovedFaqs();
+renderSuggestions();
 resetConversation();
