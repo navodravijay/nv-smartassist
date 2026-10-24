@@ -314,10 +314,12 @@ function switchLanguage(lang) {
   els.chatInput.placeholder = ui[lang].prompt;
   els.inputHint.textContent = ui[lang].hint;
   els.privacyMessage.textContent = ui[lang].privacy;
-  renderSuggestions();
-  updateInsights(null);
-  lastReply = ui[lang].welcome;
-  appendMessage("bot", ui[lang].welcome);
+
+renderSuggestions();
+
+// Reset old messages when switching languages.
+resetConversation();
+
 }
 
 function resetConversation() {
