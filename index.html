@@ -81,7 +81,20 @@
             <div class="sidebar-note"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg><p><strong>Private by default.</strong><br>Messages stay on this device during the demo.</p></div>
           </aside>
           <div class="chat-panel" aria-label="Interactive chatbot demo">
-            <header class="chat-top"><div class="chat-agent"><span class="agent-avatar">NV.</span><div><strong>SmartAssist <span>· Demo</span></strong><small><span class="online-dot"></span> Database FAQs + local fallback</small></div></div><div class="chat-actions"><div class="language-switcher" role="group" aria-label="Conversation language"><button type="button" data-lang="en" aria-pressed="true" class="is-current">EN</button><button type="button" data-lang="si" aria-pressed="false">සිං</button><button type="button" data-lang="ta" aria-pressed="false">தமிழ்</button></div><button id="resetChat" class="icon-button" type="button" title="New conversation" aria-label="Reset conversation"><svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg></button></div></header>
+            <header class="chat-top"><div class="chat-agent"><span class="agent-avatar">NV.</span><div><strong>SmartAssist <span>· Demo</span></strong>
+<small>
+  <span
+    id="faqStatusDot"
+    class="online-dot is-loading">
+  </span>
+  <span
+    id="faqStatusText"
+    role="status"
+    aria-live="polite">
+    Loading approved FAQs…
+  </span>
+</small>
+</div></div><div class="chat-actions"><div class="language-switcher" role="group" aria-label="Conversation language"><button type="button" data-lang="en" aria-pressed="true" class="is-current">EN</button><button type="button" data-lang="si" aria-pressed="false">සිං</button><button type="button" data-lang="ta" aria-pressed="false">தமிழ்</button></div><button id="resetChat" class="icon-button" type="button" title="New conversation" aria-label="Reset conversation"><svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg></button></div></header>
             <div class="chat-trust"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg><span id="privacyMessage">Scripted demo. No messages are sent to a server or saved.</span></div>
             <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-relevant="additions" aria-label="Chat conversation"></div>
             <div class="composer-area"><div class="suggestions" id="suggestions" aria-label="Suggested prompts"></div><form id="chatForm" class="composer" autocomplete="off"><label class="sr-only" for="chatInput">Your message</label><textarea id="chatInput" rows="1" maxlength="400" placeholder="Ask a question about our services…" aria-describedby="inputHint"></textarea><button type="submit" id="sendBtn" aria-label="Send message"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg></button></form><div class="composer-meta"><span id="inputHint">Enter to send · Shift + Enter for a new line</span><span><span id="charCount">0</span>/400</span></div></div>
