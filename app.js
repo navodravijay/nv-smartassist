@@ -12,7 +12,9 @@ const ui = {
     welcome: "Ayubowan! I'm NV. SmartAssist — a rule-based demonstration of a digital front desk for NV SHARP SOLUTIONS. Ask about website experiences, automation, project planning or security. I'm not connected to a live AI or business inbox.",
     prompt: "Ask a question about our services…",
     hint: "Enter to send · Shift + Enter for a new line",
-    privacy: "Scripted demo. No messages are sent to a server or saved.",
+    
+privacy: "Preview loads public FAQs from our API. Chat messages remain in your browser.",
+
     suggestions: { websites: "Tell me about websites", automation: "How does automation work?", pricing: "How can I get a quote?" },
     labels: { websites: "Web experiences", automation: "Automations", chatbot: "Chatbot concept", pricing: "Getting a quote", security: "Security approach", process: "Our process", portfolio: "Portfolio", contact: "Contact", fallback: "No matched rule" },
     promptByTopic: { websites: "Tell me about your web development services", automation: "What is business automation?", chatbot: "How does a business chatbot work?", pricing: "How can I get a project quote?", security: "How do you approach website security?" },
@@ -35,7 +37,9 @@ const ui = {
     welcome: "ආයුබෝවන්! මම NV. SmartAssist. මෙය NV SHARP SOLUTIONS වෙනුවෙන් නිර්මාණය කළ, කලින් සකස් කළ පිළිතුරු ලබාදෙන demo assistant එකකි. Websites, Automation, Project Planning හෝ Security ගැන විමසන්න. මෙය සජීවී AI සේවාවකට සම්බන්ධ නැහැ.",
     prompt: "අපගේ සේවා ගැන ප්‍රශ්නයක් අසන්න…",
     hint: "Enter = යවන්න · Shift + Enter = නව පේළිය",
-    privacy: "මෙය scripted demo එකකි. පණිවිඩ server එකකට නොයවයි; save නොකරයි.",
+   
+privacy: "Preview එකේ public FAQs API එකෙන් ලබාගනී. Chat messages browser එකෙන් පිටතට නොයවයි.",
+
     suggestions: { websites: "Website සේවා ගැන කියන්න", automation: "Automation කියන්නේ මොකක්ද?", pricing: "මිල ගණන් ලබාගන්නේ කොහොමද?" },
     labels: { websites: "වෙබ් අත්දැකීම්", automation: "ස්වයංක්‍රීයකරණය", chatbot: "Chatbot සංකල්පය", pricing: "මිල විමසීම", security: "ආරක්ෂක ක්‍රම", process: "වැඩ ක්‍රියාවලිය", portfolio: "Portfolio", contact: "සම්බන්ධ වීම", fallback: "නොගැළපෙන ප්‍රශ්නය" },
     promptByTopic: { websites: "Website නිර්මාණ සේවා ගැන කියන්න", automation: "Business automation ගැන කියන්න", chatbot: "Chatbot එකක් කොහොමද වැඩ කරන්නේ?", pricing: "Project එකකට මිල ගණන් ලබාගන්නේ කොහොමද?", security: "Website security ගැන ඔබලාගේ ක්‍රමවේදය කුමක්ද?" },
@@ -58,7 +62,9 @@ const ui = {
     welcome: "வணக்கம்! நான் NV. SmartAssist. NV SHARP SOLUTIONS-க்காக உருவாக்கப்பட்ட, முன்கூட்டியே எழுதப்பட்ட பதில்களை வழங்கும் செயல்விளக்க உதவியாளர். இணையதளங்கள், தானியக்கம், திட்டமிடல், பாதுகாப்பு பற்றி கேளுங்கள். இது நேரடி AI சேவை அல்ல.",
     prompt: "எங்கள் சேவைகள் பற்றி கேளுங்கள்…",
     hint: "Enter = அனுப்பு · Shift + Enter = புதிய வரி",
-    privacy: "இது முன்வரையறுக்கப்பட்ட செயல்விளக்கம். தகவல் அனுப்பப்படவோ சேமிக்கப்படவோ இல்லை.",
+    
+privacy: "Preview-இல் பொது FAQ தகவல்கள் API-யிலிருந்து பெறப்படும். அரட்டைச் செய்திகள் உலாவியிலேயே இருக்கும்.",
+
     suggestions: { websites: "இணையதள சேவைகள்?", automation: "தானியக்கம் என்றால்?", pricing: "விலை மதிப்பீடு பெறுவது எப்படி?" },
     labels: { websites: "இணைய அனுபவங்கள்", automation: "தானியக்கம்", chatbot: "Chatbot மாதிரி", pricing: "விலை விவரம்", security: "பாதுகாப்பு", process: "செயல்முறை", portfolio: "படைப்புகள்", contact: "தொடர்பு", fallback: "பொருந்தாத கேள்வி" },
     promptByTopic: { websites: "இணையதள வடிவமைப்பு சேவைகள் பற்றி சொல்லுங்கள்", automation: "வணிக தானியக்கம் என்றால் என்ன?", chatbot: "Chatbot எப்படி வேலை செய்கிறது?", pricing: "திட்டத்திற்கு விலை மதிப்பீடு பெறுவது எப்படி?", security: "இணையதள பாதுகாப்பை எப்படி கையாளுகிறீர்கள்?" },
