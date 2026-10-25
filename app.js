@@ -120,6 +120,50 @@ const FAQ_PREVIEW_HOST =
 let approvedFaqs = [];
 let faqLoadPromise = Promise.resolve();
 
+let faqState = "loading";
+
+const statusWords = {
+  en: {
+    loading: "Loading approved FAQs…",
+    ready: "Database FAQs connected",
+    fallback: "Local demo fallback"
+  },
+  si: {
+    loading: "FAQ දත්ත ලබාගනිමින්…",
+    ready: "Database FAQ සම්බන්ධයි",
+    fallback: "Local demo පිළිතුරු"
+  },
+  ta: {
+    loading: "FAQ தகவல்கள் ஏற்றப்படுகின்றன…",
+    ready: "தரவுத்தள FAQ இணைக்கப்பட்டது",
+    fallback: "உள்ளூர் மாதிரி பதில்கள்"
+  }
+};
+
+function setFaqStatus(state = faqState) {
+  faqState = state;
+
+  const el =
+    document.getElementById("faqStatusText");
+  const dot =
+    document.getElementById("faqStatusDot");
+
+  if (!el || !dot) return;
+
+  el.textContent =
+    statusWords[currentLang]?.[state] ||
+    statusWords.en[state];
+
+  dot.classList.toggle(
+    "is-loading", state === "loading"
+  );
+
+  dot.classList.toggle(
+    "is-fallback", state === "fallback"
+  );
+}
+
+
 function normalizeFaqQuestion(value) {
   return value
     .normalize("NFKC")
@@ -128,36 +172,60 @@ function normalizeFaqQuestion(value) {
     .trim();
 }
 
+
 async function loadApprovedFaqs() {
-  // Only enable database FAQs on our Preview site.
-  if (location.hostname !== FAQ_PREVIEW_HOST) return;
+  if (location.hostname !== FAQ_PREVIEW_HOST) {
+    setFaqStatus("fallback");
+    return;
+  }
+
+  setFaqStatus("loading");
+
+  const controller = new AbortController();
+  const timer = window.setTimeout(
+    () => controller.abort(), 5000
+  );
 
   try {
     const response = await fetch("/api/faqs", {
       method: "GET",
       credentials: "omit",
-      cache: "no-store"
+      cache: "no-store",
+      signal: controller.signal
     });
 
-    if (!response.ok) return;
+    if (!response.ok) {
+      throw new Error("FAQ unavailable");
+    }
 
     const data = await response.json();
 
-    if (data?.success !== true ||
-        !Array.isArray(data.faqs)) return;
+    if (
+      data?.success !== true ||
+      !Array.isArray(data.faqs)
+    ) {
+      throw new Error("Unexpected FAQ response");
+    }
 
-    approvedFaqs = data.faqs
-      .filter(item =>
-        item &&
-        typeof item.question === "string" &&
-        typeof item.answer === "string" &&
-        item.question.length <= 400 &&
-        item.answer.length <= 2000
-      )
-      .slice(0, 50);
+    approvedFaqs = data.faqs.filter(faq =>
+      faq &&
+      typeof faq.question === "string" &&
+      typeof faq.answer === "string" &&
+      faq.question.trim().length > 0 &&
+      faq.answer.trim().length > 0 &&
+      faq.question.length <= 400 &&
+      faq.answer.length <= 2000
+    ).slice(0, 50);
+
+    setFaqStatus(
+      approvedFaqs.length ? "ready" : "fallback"
+    );
 
   } catch {
-    // Keep existing scripted replies if API fails.
+    approvedFaqs = [];
+    setFaqStatus("fallback");
+  } finally {
+    window.clearTimeout(timer);
   }
 }
 
@@ -358,6 +426,7 @@ renderSuggestions();
 
 // Reset old messages when switching languages.
 resetConversation();
+  setFaqStatus();
 
 }
 
